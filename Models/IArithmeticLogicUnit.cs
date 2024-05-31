@@ -6,7 +6,7 @@
 
         public byte CodeBus { get; set; }
 
-        public bool Ready { get; set; }
+        public bool Ready { get; }
 
         public bool Z {  get; }
 
