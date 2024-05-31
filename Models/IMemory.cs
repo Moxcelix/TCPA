@@ -1,6 +1,6 @@
 ﻿namespace TCPA.Models
 {
-    internal interface IMemory
+    internal interface IMemory : IUpdatable
     {
         public byte DataBus {  get; set; }
 
