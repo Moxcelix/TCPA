@@ -8,7 +8,7 @@
 
         public bool Ready { get; }
 
-        public bool Z {  get; }
+        public bool Z { get; }
 
         public bool C { get; }
 

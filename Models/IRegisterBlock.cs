@@ -1,6 +1,6 @@
 ﻿namespace TCPA.Models
 {
-    internal interface IRegisterBlock
+    internal interface IRegisterBlock : IUpdatable
     {
         public byte DataBus { get; set; }
 

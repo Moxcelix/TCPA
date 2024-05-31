@@ -2,9 +2,9 @@
 {
     internal interface IMemory : IUpdatable
     {
-        public byte DataBus {  get; set; }
+        public byte DataBus { get; set; }
 
-        public byte AddressBus {  get; set; }
+        public byte AddressBus { get; set; }
 
         public byte CodeBus { get; set; }
 
