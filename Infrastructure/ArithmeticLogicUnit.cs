@@ -42,10 +42,10 @@ namespace TCPA.Infrastructure
                     var mode = CodeBus & 0b_1111_0000;
                     switch (mode)
                     {
-                        case 0b_1000_0000:
+                        case 0b_1001_0000:
                             _op0 = DataBus;
                             return;
-                        case 0b_1001_0000:
+                        case 0b_1010_0000:
                             _op1 = DataBus;
                             return;
                         case 0b_1011_0000:
