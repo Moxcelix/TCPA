@@ -6,9 +6,7 @@
 
         public byte AddressBus {  get; set; }
 
-        public bool Enabled {  get; set; }
-
-        public bool RWMode { get; set; }
+        public byte CodeBus { get; set; }
 
         public bool Ready { get; }
     }
