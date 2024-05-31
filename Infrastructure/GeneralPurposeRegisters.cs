@@ -1,6 +1,6 @@
 ﻿using TCPA.Models;
 
-namespace TCPA.Application
+namespace TCPA.Infrastructure
 {
     internal class GeneralPurposeRegisters : IRegisterBlock
     {
@@ -16,7 +16,7 @@ namespace TCPA.Application
                 return;
             }
 
-            if(CheckBit(CodeBus, 6))
+            if (CheckBit(CodeBus, 6))
             {
                 _registers[CodeBus & 0b_0000_1111] = DataBus;
             }
@@ -28,7 +28,7 @@ namespace TCPA.Application
 
         private static bool CheckBit(byte data, byte position)
         {
-            return (data & (0x1 << position)) != 0;
+            return (data & 0x1 << position) != 0;
         }
     }
 }
