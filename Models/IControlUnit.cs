@@ -8,9 +8,9 @@
 
         public bool Enabled { get; set; }
 
-        public byte ALUReady { get; set; }
+        public bool ALUReady { get; set; }
 
-        public byte MemoryReady { get; set; }
+        public bool MemoryReady { get; set; }
 
         public byte AddressBus { get; }
 
