@@ -9,15 +9,15 @@ namespace TCPA.Infrastructure
         public bool Reset { get; set; }
         public bool Enabled { get; set; }
 
-        public byte RegisterCodeBus => throw new NotImplementedException();
+        public byte RegisterCodeBus { get; private set; }
 
-        public byte ALUCodeBus => throw new NotImplementedException();
+        public byte ALUCodeBus { get; private set; }
 
-        public byte MemoryCodeBus => throw new NotImplementedException();
+        public byte MemoryCodeBus { get; private set; }
 
         public void Update()
         {
-            throw new NotImplementedException();
+
         }
     }
 }
