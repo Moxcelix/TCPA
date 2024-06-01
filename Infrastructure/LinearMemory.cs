@@ -42,14 +42,6 @@ namespace TCPA.Infrastructure
                             _state = State.WRITE;
                             _address = AddressBus;
                             break;
-                        case 0b_1000_0010:
-                            _state = State.INDIRECT_READ;
-                            _address = AddressBus;
-                            break;
-                        case 0b_1000_0011:
-                            _state = State.INDIRECT_WRITE;
-                            _address = AddressBus;
-                            break;
                         default:
                             break;
                     }
@@ -62,14 +54,7 @@ namespace TCPA.Infrastructure
                     DataBus = _data[_address];
                     _state = State.READY;
                     break;
-                case State.INDIRECT_WRITE:
-                    _address = _data[_address];
-                    _state = State.WRITE;
-                    break;
-                case State.INDIRECT_READ:
-                    _address = _data[_address];
-                    _state = State.READ;
-                    break;
+
             }
         }
     }
