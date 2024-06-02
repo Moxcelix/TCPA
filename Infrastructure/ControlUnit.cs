@@ -111,8 +111,6 @@ namespace TCPA.Infrastructure
 
         public byte MemoryCodeBus { get; private set; }
 
-        public DataMode DataMode { get; private set; }
-
         public State CurrentState => _state;
 
         public byte CMD => _cmd;
@@ -145,7 +143,6 @@ namespace TCPA.Infrastructure
                     {
                         MemoryCodeBus = (byte)MemoryCode.DISABLE;
                         _state = State.CHECK_PART;
-                        DataMode = DataMode.NONE;
                     }
                     break;
                 case State.CHECK_PART:
@@ -270,7 +267,6 @@ namespace TCPA.Infrastructure
                     }
                     break;
                 case State.NEXT_CC_ALU_FIRST:
-                    DataMode = DataMode.ALU;
                     RW = true;
                     DataBus = _cc;
                     ALUCodeBus = (byte)ALUCode.FIRST;
