@@ -32,6 +32,22 @@ namespace TCPA.Infrastructure
             DISABLE = 0b_0000_0000,
         }
 
+        private enum OperationCode : byte
+        {
+            NOP = 0b_0000_0000,
+            MOV = 0b_0000_0001,
+            CMP = 0b_0000_0010,
+            JZ = 0b_0000_0011,
+            JN = 0b_0000_0100,
+            JV = 0b_0000_0101,
+            JC = 0b_0000_0110,
+            JNZ = 0b_0000_0111,
+            JNN = 0b_0000_1000,
+            JNV = 0b_0000_1001,
+            JNC = 0b_0000_1010,
+            
+        }
+
 
         private State _state = State.DISABLED;
         private byte _cmd = 0;
