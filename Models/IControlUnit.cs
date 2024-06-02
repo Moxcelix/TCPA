@@ -12,6 +12,14 @@
 
         public bool MemoryReady { get; set; }
 
+        public bool Z { get; set; }
+
+        public bool C { get; set; }
+
+        public bool V { get; set; }
+
+        public bool N { get; set; }
+
         public byte AddressBus { get; }
 
         public byte RegisterCodeBus { get; }
