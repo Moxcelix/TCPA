@@ -67,6 +67,10 @@ namespace TCPA.Infrastructure
                             break;
                     }
                     break;
+
+                case State.OUT_OF_RANGE:
+                    _state = State.WRITE;
+                    break;
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using TCPA.Infrastructure;
 using TCPA.Application;
 
-var memory = new LinearMemory(256);
+var memory = new LinearMemory(10);
 var alu = new ArithmeticLogicUnit();
 var registers = new GeneralPurposeRegisters();
 var controlUnit = new ControlUnit();
@@ -9,6 +9,8 @@ var controlUnit = new ControlUnit();
 var controller = new Controller(memory, alu, registers, controlUnit);
 
 int tact = 0;
+
+controller.Start();
 
 while (true)
 {
@@ -21,6 +23,6 @@ while (true)
     Console.WriteLine("ACC reg: " + controlUnit.ACC.ToString());
     Console.WriteLine();
 
-    Thread.Sleep(100);
+    Thread.Sleep(10);
 }
 

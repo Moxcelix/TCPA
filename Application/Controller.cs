@@ -16,9 +16,22 @@ namespace TCPA.Application
         private byte _dataBus = 0b_0000_0000;
         private byte _addressBus = 0b_0000_0000;
 
-        public void Update()
+        public void Start()
         {
             _controlUnit.Enabled = true;
+        }
+
+        public void Update()
+        {
+            if (!_controlUnit.Enabled)
+            {
+                _controlUnit.Enabled = true;
+            }
+
+            if(_memory.OutOfRange)
+            {
+                _controlUnit.Reset = true;
+            }
 
             _controlUnit.MemoryReady = _memory.Ready;
             _controlUnit.ALUReady = _arithmeticLogicUnit.Ready;

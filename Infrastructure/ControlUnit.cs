@@ -127,6 +127,20 @@ namespace TCPA.Infrastructure
                 return;
             }
 
+            if (Reset)
+            {
+                Reset = false;
+                Enabled = false;
+                _state = State.DISABLED;
+                _cmd = 0;
+                _op0 = 0;
+                _op1 = 0;
+                _acc = 0;
+                _buf = 0;
+                _cc = 0;
+                _pc = 0;
+            }
+
             switch (_state)
             {
                 case State.DISABLED:
@@ -171,7 +185,7 @@ namespace TCPA.Infrastructure
                         _pc = 0;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
-                    else if(_cmd == (byte)OperationCode.SETC)
+                    else if (_cmd == (byte)OperationCode.SETC)
                     {
                         C = true;
                         _pc = 0;
@@ -225,7 +239,7 @@ namespace TCPA.Infrastructure
                     }
                     break;
                 case State.CHECK_DOUBLE_OP:
-                    if(_cmd == (byte)OperationCode.JC)
+                    if (_cmd == (byte)OperationCode.JC)
                     {
                         _state = State.JUMP_IF_C;
                     }
@@ -240,7 +254,7 @@ namespace TCPA.Infrastructure
                     else if (_cmd == (byte)OperationCode.JZ)
                     {
                         _state = State.JUMP_IF_Z;
-                    } 
+                    }
                     else if (_cmd == (byte)OperationCode.JNC)
                     {
                         _state = State.JUMP_IF_NOT_C;
