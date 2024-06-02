@@ -1,7 +1,7 @@
 ﻿using TCPA.Infrastructure;
 using TCPA.Application;
 
-var memory = new LinearMemory(10);
+var memory = new LinearMemory(256);
 var alu = new ArithmeticLogicUnit();
 var registers = new GeneralPurposeRegisters();
 var controlUnit = new ControlUnit();
@@ -10,6 +10,12 @@ var controller = new Controller(memory, alu, registers, controlUnit);
 
 int tact = 0;
 
+byte[] program = {
+    0x01,
+    0x80,
+};
+
+memory.SetData(program);
 controller.Start();
 
 while (true)
