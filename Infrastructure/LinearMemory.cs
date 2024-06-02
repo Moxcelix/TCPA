@@ -36,6 +36,11 @@ namespace TCPA.Infrastructure
             }
         }
 
+        public byte[] GetData()
+        {
+            return _data;
+        }
+
         public void Update()
         {
             var enabled = (CodeBus & 0b_1000_0000) != 0;

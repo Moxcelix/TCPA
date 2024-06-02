@@ -31,6 +31,7 @@ namespace TCPA.Infrastructure
             DIRECT_ADDRESSING,
             INDIRECT_ADDRESSING,
             REGISTER_ADDRESSING,
+            INDIRECT_TO_DIRECT,
             RETURN,
             CHECK_COMMAND,
         }
@@ -189,8 +190,11 @@ namespace TCPA.Infrastructure
                     else if (_pc == 2)
                     {
                         _pc = 3;
+                        _acc = _op0;
                         _op1 = DataBus;
-                        _state = State.CHECK_MOV;
+                        _op = _op1;
+                        _trw = false;
+                        _state = State.PARSE_ADDRESSING;
                     }
                     break;
                 case State.CHECK_SINGLE_OP:
@@ -257,7 +261,7 @@ namespace TCPA.Infrastructure
                     {
                         _pc = 0;
                         _cc = _op0;
-                        _state = State.NEXT_CC_ALU_FIRST;
+                        _state = State.REQUEST_READ_BYTE;
                     }
                     else if (_cmd is ((byte)OperationCode.JC)
                         or ((byte)OperationCode.JN)
@@ -314,13 +318,14 @@ namespace TCPA.Infrastructure
                     if (CheckBit(_op, 7))
                     {
                         RW = _trw;
-                        MemoryCodeBus = (byte)(RW ? MemoryCode.WRITE: MemoryCode.READ);
+                        MemoryCodeBus = (byte)(RW ? MemoryCode.WRITE : MemoryCode.READ);
                         AddressBus = (byte)(_op & 0b_0111_1111);
                         _state = State.DIRECT_ADDRESSING;
                     }
-                    else if(CheckBit(_op, 6))
+                    else if (CheckBit(_op, 6))
                     {
                         RW = false;
+                        _buf = DataBus;
                         MemoryCodeBus = (byte)MemoryCode.READ;
                         AddressBus = (byte)(_op & 0b_0011_1111);
                         _state = State.INDIRECT_ADDRESSING;
@@ -344,11 +349,46 @@ namespace TCPA.Infrastructure
                         _state = State.RETURN;
                     }
                     break;
+                case State.INDIRECT_ADDRESSING:
+                    if (MemoryReady)
+                    {
+                        MemoryCodeBus = (byte)MemoryCode.DISABLE;
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine(DataBus.ToString());
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        AddressBus = DataBus;
+                        DataBus = _buf;
+                        _state = State.INDIRECT_TO_DIRECT;
+                    }
+                    break;
+                case State.INDIRECT_TO_DIRECT:
+                    RW = _trw;
+                    MemoryCodeBus = (byte)(RW ? MemoryCode.WRITE : MemoryCode.READ);
+                    _state = State.DIRECT_ADDRESSING;
+                    break;
+                case State.REGISTER_ADDRESSING:
+                    RegisterCodeBus = 0;
+                    _state = State.RETURN;
+                    break;
+                case State.CONST_ADDRESSING:
+                    DataBus = _op;
+                    _state = State.RETURN;
+                    break;
                 case State.RETURN:
-                    if(_pc == 2)
+                    if (_pc == 1)
+                    {
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else if(_pc == 2)
                     {
                         _pc = 1;
                         _state = State.CHECK_COMMAND;
+                    }
+                    else if (_pc == 3)
+                    {
+                        _pc = 2;
+                        _state = State.CHECK_MOV;
                     }
                     break;
                 case State.CHECK_COMMAND:
@@ -387,6 +427,16 @@ namespace TCPA.Infrastructure
                     else if (_cmd == (byte)OperationCode.NOT)
                     {
                         _state = State.NOT;
+                    }
+                    break;
+
+                case State.CHECK_MOV:
+                    if(_cmd == (byte)OperationCode.MOV)
+                    {
+                        _trw = true;
+                        _op = _op0;
+                        _pc = 1;
+                        _state = State.PARSE_ADDRESSING;
                     }
                     break;
             }
