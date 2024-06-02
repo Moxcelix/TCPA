@@ -14,11 +14,12 @@ while (true)
 {
     controller.Update();
 
-    Console.WriteLine("\nTact: " + tact++);
+    Console.WriteLine("Tact: " + tact++);
     Console.WriteLine("CU state: " + controlUnit.CurrentState.ToString());
     Console.WriteLine("CC reg: " + controlUnit.CC.ToString());
     Console.WriteLine("CMD reg: " + controlUnit.CMD.ToString());
     Console.WriteLine("ACC reg: " + controlUnit.ACC.ToString());
+    Console.WriteLine();
 
     Thread.Sleep(100);
 }
