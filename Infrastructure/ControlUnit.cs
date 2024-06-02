@@ -46,7 +46,7 @@ namespace TCPA.Infrastructure
         private enum OperationCode : byte
         {
             NOP = 0b_0000_0000,
-            MOV = 0b_0000_0001,
+            ORG = 0b_0000_0001,
             CMP = 0b_0000_0010,
             JZ = 0b_0000_0011,
             JN = 0b_0000_0100,
@@ -71,6 +71,7 @@ namespace TCPA.Infrastructure
             OR = 0b_0001_0111,
             AND = 0b_0001_1000,
             NOT = 0b_0001_1001,
+            MOV = 0b_0001_1010,
         }
 
 
@@ -239,7 +240,13 @@ namespace TCPA.Infrastructure
                     }
                     break;
                 case State.CHECK_DOUBLE_OP:
-                    if (_cmd == (byte)OperationCode.JC)
+                    if (_cmd == (byte)OperationCode.ORG)
+                    {
+                        _pc = 0;
+                        _cc = _op0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else if (_cmd == (byte)OperationCode.JC)
                     {
                         _state = State.JUMP_IF_C;
                     }
