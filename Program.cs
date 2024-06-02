@@ -1,17 +1,19 @@
 ﻿using TCPA.Infrastructure;
+using TCPA.Application;
 
+var memory = new LinearMemory(256);
 var alu = new ArithmeticLogicUnit();
-alu.DataBus = 255;
-alu.CodeBus = 0b_1001_0000;
-alu.Update();
-alu.DataBus = 0;
-alu.CodeBus = 0b_1010_0000;
-alu.Update();
-alu.CodeBus = 0b_1011_0000;
-do
-{
-    alu.Update();
-} while (!alu.Ready);
+var registers = new GeneralPurposeRegisters();
+var controlUnit = new ControlUnit();
 
-Console.WriteLine(alu.DataBus);
-Console.WriteLine(alu.C);
+var controller = new Controller(memory, alu, registers, controlUnit); 
+
+while (true)
+{
+    controller.Update();
+
+   // Console.WriteLine(controlUnit.CurrentState.ToString());
+
+    Thread.Sleep(100);
+}
+

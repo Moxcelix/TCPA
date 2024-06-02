@@ -4,17 +4,28 @@ namespace TCPA.Infrastructure
 {
     internal class ControlUnit : IControlUnit
     {
-        private enum State
+        public enum State
         {
             DISABLED,
             REQUEST_READ_BYTE,
             READ_BYTE,
             CHECK_PART,
             CHECK_DOUBLE_OP,
+            CHECK_SINGLE_OP,
             CHECK_MOV,
             NEXT_CC_ALU_FIRST,
             NEXT_CC_ALU_SECOND,
-            NEXT_CC_ALU_RESULT,
+            NEXT_CC_ALU_GET_RESULT,
+            NEXT_CC_ALU_WAIT_RESULT,
+            JUMP_IF_C,
+            JUMP_IF_N,
+            JUMP_IF_V,
+            JUMP_IF_Z,
+            JUMP_IF_NOT_C,
+            JUMP_IF_NOT_N,
+            JUMP_IF_NOT_V,
+            JUMP_IF_NOT_Z,
+            NOT,
         }
 
         private enum MemoryCode : byte
@@ -45,7 +56,21 @@ namespace TCPA.Infrastructure
             JNN = 0b_0000_1000,
             JNV = 0b_0000_1001,
             JNC = 0b_0000_1010,
-            
+            SETZ = 0b_0000_1011,
+            SETN = 0b_0000_1100,
+            SETV = 0b_0000_1101,
+            SETC = 0b_0000_1110,
+            CLRZ = 0b_0000_1111,
+            CLRN = 0b_0001_0000,
+            CLRV = 0b_0001_0001,
+            CLRC = 0b_0001_0010,
+            SUM = 0b_0001_0011,
+            SUB = 0b_0001_0100,
+            ROL = 0b_0001_0101,
+            ROR = 0b_0001_0110,
+            OR = 0b_0001_0111,
+            AND = 0b_0001_1000,
+            NOT = 0b_0001_1001,
         }
 
 
@@ -68,6 +93,16 @@ namespace TCPA.Infrastructure
 
         public bool MemoryReady { get; set; }
 
+        public bool Z { get; set; }
+
+        public bool C { get; set; }
+
+        public bool V { get; set; }
+
+        public bool N { get; set; }
+
+        public bool RW { get; set; }
+
         public byte AddressBus { get; private set; }
 
         public byte RegisterCodeBus { get; private set; }
@@ -76,8 +111,18 @@ namespace TCPA.Infrastructure
 
         public byte MemoryCodeBus { get; private set; }
 
+        public DataMode DataMode { get; private set; }
+
+        public State CurrentState => _state;
+
+
         public void Update()
         {
+            Console.WriteLine("STATE: " + _state);
+            Console.WriteLine("PC: " + _pc);
+            Console.WriteLine("CC: " + _cc);
+            Console.WriteLine("CMD: " + _cmd);
+
             if (!Enabled)
             {
                 return;
@@ -91,6 +136,7 @@ namespace TCPA.Infrastructure
                 case State.REQUEST_READ_BYTE:
                     AddressBus = _cc;
                     MemoryCodeBus = (byte)MemoryCode.READ;
+                    RW = false;
                     _state = State.READ_BYTE;
                     break;
                 case State.READ_BYTE:
@@ -98,6 +144,7 @@ namespace TCPA.Infrastructure
                     {
                         MemoryCodeBus = (byte)MemoryCode.DISABLE;
                         _state = State.CHECK_PART;
+                        DataMode = DataMode.NONE;
                     }
                     break;
                 case State.CHECK_PART:
@@ -105,7 +152,7 @@ namespace TCPA.Infrastructure
                     {
                         _cmd = DataBus;
                         _pc = 1;
-                        _state = State.NEXT_CC_ALU_FIRST;
+                        _state = State.CHECK_SINGLE_OP;
                     }
                     else if (_pc == 1)
                     {
@@ -120,17 +167,126 @@ namespace TCPA.Infrastructure
                         _state = State.CHECK_MOV;
                     }
                     break;
+                case State.CHECK_SINGLE_OP:
+                    if (_cmd == (byte)OperationCode.NOP)
+                    {
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else if(_cmd == (byte)OperationCode.SETC)
+                    {
+                        C = true;
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else if (_cmd == (byte)OperationCode.SETZ)
+                    {
+                        Z = true;
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else if (_cmd == (byte)OperationCode.SETV)
+                    {
+                        V = true;
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else if (_cmd == (byte)OperationCode.SETN)
+                    {
+                        N = true;
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else if (_cmd == (byte)OperationCode.CLRC)
+                    {
+                        C = false;
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else if (_cmd == (byte)OperationCode.CLRZ)
+                    {
+                        Z = false;
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else if (_cmd == (byte)OperationCode.CLRV)
+                    {
+                        V = false;
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else if (_cmd == (byte)OperationCode.CLRN)
+                    {
+                        N = false;
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    else
+                    {
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    break;
+                case State.CHECK_DOUBLE_OP:
+                    if(_cmd == (byte)OperationCode.JC)
+                    {
+                        _state = State.JUMP_IF_C;
+                    }
+                    else if (_cmd == (byte)OperationCode.JN)
+                    {
+                        _state = State.JUMP_IF_N;
+                    }
+                    else if (_cmd == (byte)OperationCode.JV)
+                    {
+                        _state = State.JUMP_IF_V;
+                    }
+                    else if (_cmd == (byte)OperationCode.JZ)
+                    {
+                        _state = State.JUMP_IF_Z;
+                    } 
+                    else if (_cmd == (byte)OperationCode.JNC)
+                    {
+                        _state = State.JUMP_IF_NOT_C;
+                    }
+                    else if (_cmd == (byte)OperationCode.JNN)
+                    {
+                        _state = State.JUMP_IF_NOT_N;
+                    }
+                    else if (_cmd == (byte)OperationCode.JNV)
+                    {
+                        _state = State.JUMP_IF_NOT_V;
+                    }
+                    else if (_cmd == (byte)OperationCode.JNZ)
+                    {
+                        _state = State.JUMP_IF_NOT_Z;
+                    }
+                    else if (_cmd == (byte)OperationCode.NOT)
+                    {
+                        _state = State.NOT;
+                    }
+                    else
+                    {
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    break;
                 case State.NEXT_CC_ALU_FIRST:
+                    DataMode = DataMode.ALU;
+                    RW = true;
                     DataBus = _cc;
                     ALUCodeBus = (byte)ALUCode.FIRST;
                     _state = State.NEXT_CC_ALU_SECOND;
                     break;
                 case State.NEXT_CC_ALU_SECOND:
+                    RW = true;
                     DataBus = 1;
                     ALUCodeBus = (byte)ALUCode.SECOND;
-                    _state = State.NEXT_CC_ALU_RESULT;
+                    _state = State.NEXT_CC_ALU_GET_RESULT;
                     break;
-                case State.NEXT_CC_ALU_RESULT:
+                case State.NEXT_CC_ALU_GET_RESULT:
+                    RW = false;
+                    ALUCodeBus = (byte)ALUCode.RESULT;
+                    _state = State.NEXT_CC_ALU_WAIT_RESULT;
+                    break;
+                case State.NEXT_CC_ALU_WAIT_RESULT:
                     if (ALUReady)
                     {
                         _cc = DataBus;

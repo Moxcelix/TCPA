@@ -9,8 +9,6 @@ namespace TCPA.Infrastructure
             READY,
             WRITE,
             READ,
-            INDIRECT_WRITE,
-            INDIRECT_READ,
         }
 
         private readonly byte[] _data = new byte[size];
@@ -26,6 +24,7 @@ namespace TCPA.Infrastructure
 
         public void Update()
         {
+
             switch (_state)
             {
                 case State.READY:

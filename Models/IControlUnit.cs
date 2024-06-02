@@ -1,5 +1,13 @@
 ﻿namespace TCPA.Models
 {
+    internal enum DataMode
+    {
+        NONE,
+        MEMORY,
+        REGISTER,
+        ALU
+    }
+
     internal interface IControlUnit : IUpdatable
     {
         public byte DataBus { get; set; }
@@ -20,12 +28,16 @@
 
         public bool N { get; set; }
 
+        public DataMode DataMode { get; }
+
+        public bool RW { get; }
+
         public byte AddressBus { get; }
 
         public byte RegisterCodeBus { get; }
 
         public byte ALUCodeBus { get; }
 
-        public byte MemoryCodeBus {  get; }
+        public byte MemoryCodeBus { get; }
     }
 }

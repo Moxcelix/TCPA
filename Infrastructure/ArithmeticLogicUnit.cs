@@ -6,15 +6,8 @@ namespace TCPA.Infrastructure
     {
         private enum State
         {
+            WRITE,
             READY,
-            SUM,
-            SUB,
-            CMP,
-            ROL,
-            ROR,
-            OR,
-            AND,
-            NOT
         }
 
         private State _state = State.READY;
@@ -22,6 +15,7 @@ namespace TCPA.Infrastructure
         private byte _op1 = 0;
 
         public byte DataBus { get; set; }
+
         public byte CodeBus { get; set; }
 
         public bool Ready => _state == State.READY;
@@ -36,9 +30,18 @@ namespace TCPA.Infrastructure
 
         public void Update()
         {
+            var enabled = (CodeBus & 0b_1000_0000) != 0;
+
+            if (!enabled)
+            {
+                _state = State.WRITE;
+            }
+
+            
+            Console.WriteLine(_state);
             switch (_state)
             {
-                case State.READY:
+                case State.WRITE:
                     var mode = CodeBus & 0b_1111_0000;
                     switch (mode)
                     {
@@ -54,87 +57,59 @@ namespace TCPA.Infrastructure
                             return;
 
                     }
+
                     Z = false;
                     N = false;
                     V = false;
                     C = false;
+
                     var code = CodeBus & 0b_0000_1111;
+
                     switch (code)
                     {
                         case 0b_0000:
-                            _state = State.SUM;
+                            int sum = _op0 + _op1;
+
+                            C = sum > 0b_1111_1111;
+                            N = (sbyte)sum < 0;
+                            Z = sum == 0;
+
+                            DataBus = (byte)sum;
                             break;
                         case 0b_0001:
-                            _state = State.SUB;
+                            int sub = _op0 - _op1;
+
+                            C = sub > 0b_1111_1111;
+                            N = (sbyte)sub < 0;
+                            Z = sub == 0;
+
+                            DataBus = (byte)sub;
                             break;
                         case 0b_0010:
-                            _state = State.CMP;
+                            Z = _op0 <= _op1;
+                            V = _op0 >= _op1;
                             break;
                         case 0b_0011:
-                            _state = State.ROL;
+                            DataBus = (byte)(_op0 << _op1);
+                            C = (_op0 & 0b_1000_0000) == 1;
                             break;
                         case 0b_0100:
-                            _state = State.ROR;
+                            DataBus = (byte)(_op0 >> _op1);
+                            C = (_op0 & 0b_0000_0001) == 1;
                             break;
                         case 0b_0101:
-                            _state = State.OR;
+                            DataBus = (byte)(_op0 | _op1);
+                            C = (_op0 | _op1) != 0;
                             break;
                         case 0b_0110:
-                            _state = State.AND;
+                            DataBus = (byte)(_op0 & _op1);
+                            C = (_op0 & _op1) != 0;
                             break;
                         case 0b_0111:
-                            _state = State.NOT;
+                            DataBus = (byte)(~_op0);
+                            C = (~_op0) != 0;
                             break;
                     }
-                    break;
-                case State.SUM:
-                    int sum = _op0 + _op1;
-
-                    C = sum > 0b_1111_1111;
-                    N = (sbyte)sum < 0;
-                    Z = sum == 0;
-
-                    DataBus = (byte)sum;
-                    _state = State.READY;
-                    break;
-                case State.SUB:
-                    int sub = _op0 - _op1;
-
-                    C = sub > 0b_1111_1111;
-                    N = (sbyte)sub < 0;
-                    Z = sub == 0;
-
-                    DataBus = (byte)sub;
-                    _state = State.READY;
-                    break;
-                case State.CMP:
-                    Z = _op0 <= _op1;
-                    V = _op0 >= _op1;
-                    _state = State.READY;
-                    break;
-                case State.ROR:
-                    DataBus = (byte)(_op0 >> _op1);
-                    C = (_op0 & 0b_0000_0001) == 1;
-                    _state = State.READY;
-                    break;
-                case State.ROL:
-                    DataBus = (byte)(_op0 << _op1);
-                    C = (_op0 & 0b_1000_0000) == 1;
-                    _state = State.READY;
-                    break;
-                case State.OR:
-                    DataBus = (byte)(_op0 | _op1);
-                    C = (_op0 | _op1) != 0;
-                    _state = State.READY;
-                    break;
-                case State.AND:
-                    DataBus = (byte)(_op0 & _op1);
-                    C = (_op0 & _op1) != 0;
-                    _state = State.READY;
-                    break;
-                case State.NOT:
-                    DataBus = (byte)(~_op0);
-                    C = (~_op0) != 0;
                     _state = State.READY;
                     break;
             }

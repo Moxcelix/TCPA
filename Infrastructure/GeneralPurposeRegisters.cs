@@ -7,6 +7,7 @@ namespace TCPA.Infrastructure
         private readonly byte[] _registers = new byte[16];
 
         public byte DataBus { get; set; }
+
         public byte CodeBus { get; set; }
 
         public void Update()

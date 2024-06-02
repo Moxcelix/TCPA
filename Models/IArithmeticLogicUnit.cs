@@ -15,5 +15,6 @@
         public bool V { get; }
 
         public bool N { get; }
+
     }
 }
