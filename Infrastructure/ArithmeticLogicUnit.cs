@@ -89,23 +89,23 @@ namespace TCPA.Infrastructure
                     break;
                 case State.SUM:
                     int sum = _op0 + _op1;
-                    if (sum > 0b_1111_1111)
-                    {
-                        C = true;
-                    }
+
+                    C = sum > 0b_1111_1111;
+                    N = (sbyte)sum < 0;
+                    Z = sum == 0;
+
                     DataBus = (byte)sum;
                     _state = State.READY;
-                    Z = sum == 0;
                     break;
                 case State.SUB:
                     int sub = _op0 - _op1;
-                    if (sub < 0)
-                    {
-                        N = true;
-                    }
+
+                    C = sub > 0b_1111_1111;
+                    N = (sbyte)sub < 0;
+                    Z = sub == 0;
+
                     DataBus = (byte)sub;
                     _state = State.READY;
-                    Z = sub == 0;
                     break;
                 case State.CMP:
                     Z = _op0 <= _op1;
