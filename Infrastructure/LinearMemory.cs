@@ -6,15 +6,13 @@ namespace TCPA.Infrastructure
     {
         private enum State
         {
-            READY,
             WRITE,
-            READ,
+            READY, 
         }
 
         private readonly byte[] _data = new byte[size];
 
-        private State _state = State.READY;
-        private byte _address = 0;
+        private State _state = State.WRITE;
 
         public byte DataBus { get; set; }
         public byte AddressBus { get; set; }
@@ -24,36 +22,35 @@ namespace TCPA.Infrastructure
 
         public void Update()
         {
+            var enabled = (CodeBus & 0b_1000_0000) != 0;
+
+            if (!enabled)
+            {
+                _state = State.WRITE;
+
+                return;
+            }
 
             switch (_state)
             {
-                case State.READY:
+                case State.WRITE:
                     switch (CodeBus)
                     {
                         case 0b_0000_0000:
                             DataBus = 0b_0000_0000;
                             break;
                         case 0b_1000_0000:
-                            _state = State.READ;
-                            _address = AddressBus;
+                            DataBus = _data[AddressBus];
+                            _state = State.READY;
                             break;
                         case 0b_1000_0001:
-                            _state = State.WRITE;
-                            _address = AddressBus;
+                            _data[AddressBus] = DataBus;
+                            _state = State.READY;
                             break;
                         default:
                             break;
                     }
                     break;
-                case State.WRITE:
-                    _data[_address] = DataBus;
-                    _state = State.READY;
-                    break;
-                case State.READ:
-                    DataBus = _data[_address];
-                    _state = State.READY;
-                    break;
-
             }
         }
     }

@@ -115,14 +115,15 @@ namespace TCPA.Infrastructure
 
         public State CurrentState => _state;
 
+        public byte CMD => _cmd;
+
+        public byte ACC => _acc;
+
+        public byte CC => _cc;
+
 
         public void Update()
         {
-            Console.WriteLine("STATE: " + _state);
-            Console.WriteLine("PC: " + _pc);
-            Console.WriteLine("CC: " + _cc);
-            Console.WriteLine("CMD: " + _cmd);
-
             if (!Enabled)
             {
                 return;

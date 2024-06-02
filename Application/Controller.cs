@@ -63,12 +63,6 @@ namespace TCPA.Application
             _memory.Update();
             _arithmeticLogicUnit.Update();
             _registerBlock.Update();
-
-            Console.WriteLine("ALU ready: " + _arithmeticLogicUnit.Ready);
-            Console.WriteLine("RW " + _controlUnit.RW);
-            Console.WriteLine("ALU Code " + _controlUnit.ALUCodeBus);
-            Console.WriteLine("ALU DB " + _arithmeticLogicUnit.DataBus);
-            Console.WriteLine("DB " + _dataBus);
         }
     }
 }

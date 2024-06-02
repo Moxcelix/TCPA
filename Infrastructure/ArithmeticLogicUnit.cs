@@ -10,7 +10,7 @@ namespace TCPA.Infrastructure
             READY,
         }
 
-        private State _state = State.READY;
+        private State _state = State.WRITE;
         private byte _op0 = 0;
         private byte _op1 = 0;
 
@@ -35,10 +35,11 @@ namespace TCPA.Infrastructure
             if (!enabled)
             {
                 _state = State.WRITE;
+
+                return;
             }
 
             
-            Console.WriteLine(_state);
             switch (_state)
             {
                 case State.WRITE:
