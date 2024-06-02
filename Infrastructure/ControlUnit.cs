@@ -17,14 +17,21 @@ namespace TCPA.Infrastructure
             NEXT_CC_ALU_RESULT,
         }
 
-        private const byte READ_MEMORY      = 0b_1000_0000;
-        private const byte WRITE_MEMORY     = 0b_1000_0001;
-        private const byte DISABLE_MEMORY   = 0b_0000_0000;
+        private enum MemoryCode : byte
+        {
+            READ = 0b_1000_0000,
+            WRITE = 0b_1000_0001,
+            DISABLE = 0b_0000_0000,
+        }
 
-        private const byte ALU_FIRST    = 0b_1001_0000;
-        private const byte ALU_SECOND   = 0b_1010_0000;
-        private const byte ALU_RESULT   = 0b_1011_0000;
-        private const byte ALU_DISABLE  = 0b_0000_0000;
+        private enum ALUCode : byte
+        {
+            FIRST = 0b_1001_0000,
+            SECOND = 0b_1010_0000,
+            RESULT = 0b_1011_0000,
+            DISABLE = 0b_0000_0000,
+        }
+
 
         private State _state = State.DISABLED;
         private byte _cmd = 0;
@@ -67,13 +74,13 @@ namespace TCPA.Infrastructure
                     break;
                 case State.REQUEST_READ_BYTE:
                     AddressBus = _cc;
-                    MemoryCodeBus = READ_MEMORY;
+                    MemoryCodeBus = (byte)MemoryCode.READ;
                     _state = State.READ_BYTE;
                     break;
                 case State.READ_BYTE:
                     if (MemoryReady)
                     {
-                        MemoryCodeBus = DISABLE_MEMORY;
+                        MemoryCodeBus = (byte)MemoryCode.DISABLE;
                         _state = State.CHECK_PART;
                     }
                     break;
@@ -84,7 +91,7 @@ namespace TCPA.Infrastructure
                         _pc = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
-                    else if(_pc == 1)
+                    else if (_pc == 1)
                     {
                         _pc = 2;
                         _op0 = DataBus;
@@ -99,19 +106,19 @@ namespace TCPA.Infrastructure
                     break;
                 case State.NEXT_CC_ALU_FIRST:
                     DataBus = _cc;
-                    ALUCodeBus = ALU_FIRST;
+                    ALUCodeBus = (byte)ALUCode.FIRST;
                     _state = State.NEXT_CC_ALU_SECOND;
                     break;
                 case State.NEXT_CC_ALU_SECOND:
                     DataBus = 1;
-                    ALUCodeBus = ALU_SECOND;
+                    ALUCodeBus = (byte)ALUCode.SECOND;
                     _state = State.NEXT_CC_ALU_RESULT;
                     break;
                 case State.NEXT_CC_ALU_RESULT:
-                    if(ALUReady)
+                    if (ALUReady)
                     {
                         _cc = DataBus;
-                        ALUCodeBus = ALU_DISABLE;
+                        ALUCodeBus = (byte)ALUCode.DISABLE;
                         _state = State.REQUEST_READ_BYTE;
                     }
                     break;
