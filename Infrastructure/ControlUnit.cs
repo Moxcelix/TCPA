@@ -333,7 +333,7 @@ namespace TCPA.Infrastructure
                     else if (CheckBit(_op, 5))
                     {
                         RW = _trw;
-                        RegisterCodeBus = (byte)(_op | 0b_1000_0000);
+                        RegisterCodeBus = (byte)(_op | (RW ? 0b_1100_0000 : 0b_1000_0000));
                         _state = State.REGISTER_ADDRESSING;
                     }
                     else

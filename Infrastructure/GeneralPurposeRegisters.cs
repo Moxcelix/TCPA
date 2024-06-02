@@ -10,6 +10,11 @@ namespace TCPA.Infrastructure
 
         public byte CodeBus { get; set; }
 
+        public byte[] GetData()
+        {
+            return _registers;
+        }
+
         public void Update()
         {
             if (!CheckBit(CodeBus, 7))

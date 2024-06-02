@@ -19,7 +19,7 @@ byte[] program = {
     0x06,
     0x00,
     0b_0001_1010, // MOV
-    0b_0100_0101, // [5]
+    0b_0010_0101, // R5
     0b_0100_0010  // [2]
 };
 
@@ -37,6 +37,17 @@ void PrintMemory()
     Console.WriteLine();    
 }
 
+void PrintRegisters()
+{
+    var data = registers.GetData();
+
+    for (int i = 0; i < data.Length; i++)
+    {
+        Console.Write(data[i] + " ");
+    }
+    Console.WriteLine();
+}
+
 while (true)
 {
     controller.Update();
@@ -49,6 +60,9 @@ while (true)
     Console.WriteLine();
     Console.WriteLine("Memory");
     PrintMemory();
+    Console.WriteLine();
+    Console.WriteLine("Registers");
+    PrintRegisters();
     Console.WriteLine();
 
     Thread.Sleep(200);
