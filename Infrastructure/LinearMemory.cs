@@ -25,6 +25,17 @@ namespace TCPA.Infrastructure
 
         public bool Ready => _state == State.READY;
 
+        public void SetData(byte[] data)
+        {
+            if(data.Length <= _data.Length)
+            {
+                for(int i = 0; i < data.Length; i++)
+                {
+                    _data[i] = data[i];
+                }
+            }
+        }
+
 
         public void Update()
         {

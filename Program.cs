@@ -23,6 +23,6 @@ while (true)
     Console.WriteLine("ACC reg: " + controlUnit.ACC.ToString());
     Console.WriteLine();
 
-    Thread.Sleep(10);
+    Thread.Sleep(500);
 }
 
