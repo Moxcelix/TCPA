@@ -8,6 +8,7 @@ namespace TCPA.Infrastructure
         {
             WRITE,
             READY, 
+            OUT_OF_RANGE
         }
 
         private readonly byte[] _data = new byte[size];
@@ -15,10 +16,15 @@ namespace TCPA.Infrastructure
         private State _state = State.WRITE;
 
         public byte DataBus { get; set; }
+
         public byte AddressBus { get; set; }
+
         public byte CodeBus { get; set; }
 
+        public bool OutOfRange => _state == State.OUT_OF_RANGE;
+
         public bool Ready => _state == State.READY;
+
 
         public void Update()
         {
@@ -40,10 +46,20 @@ namespace TCPA.Infrastructure
                             DataBus = 0b_0000_0000;
                             break;
                         case 0b_1000_0000:
+                            if(AddressBus >= _data.Length)
+                            {
+                                _state = State.OUT_OF_RANGE;
+                                break;
+                            }
                             DataBus = _data[AddressBus];
                             _state = State.READY;
                             break;
                         case 0b_1000_0001:
+                            if (AddressBus >= _data.Length)
+                            {
+                                _state = State.OUT_OF_RANGE;
+                                break;
+                            }
                             _data[AddressBus] = DataBus;
                             _state = State.READY;
                             break;
