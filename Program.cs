@@ -56,15 +56,21 @@ void PrintRegisters()
     Console.WriteLine();
 }
 
+int initialCursorTop = Console.CursorTop;
+Console.CursorVisible = false;
+
 while (true)
 {
+    Console.SetCursorPosition(0, initialCursorTop);
+
     controller.Update();
 
-    Console.WriteLine("Tact: " + tact++);
-    Console.WriteLine("CU state: " + controlUnit.CurrentState.ToString());
-    Console.WriteLine("CC reg: " + controlUnit.CC.ToString());
-    Console.WriteLine("CMD reg: " + controlUnit.CMD.ToString());
-    Console.WriteLine("ACC reg: " + controlUnit.ACC.ToString());
+    Console.WriteLine($"Tact: {tact++:0000}");
+    Console.WriteLine($"CU State: {controlUnit.CurrentState,-32}");
+    Console.WriteLine($"CC reg:  {controlUnit.CC,2:X2}");
+    Console.WriteLine($"CMD reg: {controlUnit.CMD,2:X2}");
+    Console.WriteLine($"ACC reg: {controlUnit.ACC,2:X2}");
+    Console.WriteLine($"DB:      {controlUnit.DataBus,2:X2}");
     Console.WriteLine();
     Console.WriteLine("Memory");
     PrintMemory();
@@ -73,6 +79,6 @@ while (true)
     PrintRegisters();
     Console.WriteLine();
 
-    Thread.Sleep(200);
+    Thread.Sleep(500);
 }
 
