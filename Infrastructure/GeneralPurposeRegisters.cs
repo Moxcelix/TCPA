@@ -10,6 +10,8 @@ namespace TCPA.Infrastructure
 
         public byte CodeBus { get; set; }
 
+        public int LastChanged {  get; private set; }
+
         public byte[] GetData()
         {
             return _registers;
@@ -19,16 +21,22 @@ namespace TCPA.Infrastructure
         {
             if (!CheckBit(CodeBus, 7))
             {
+                LastChanged = -1;
+
                 return;
             }
 
+            var index = CodeBus & 0b_0000_1111;
+
             if (CheckBit(CodeBus, 6))
             {
-                _registers[CodeBus & 0b_0000_1111] = DataBus;
+                _registers[index] = DataBus;
+
+                LastChanged = index;
             }
             else
             {
-                DataBus = _registers[CodeBus & 0b_0000_1111];
+                DataBus = _registers[index];
             }
         }
 
