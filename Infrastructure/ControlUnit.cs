@@ -380,11 +380,13 @@ namespace TCPA.Infrastructure
                     else if(_pc == 2)
                     {
                         _pc = 1;
+                        _op0 = DataBus;
                         _state = State.CHECK_COMMAND;
                     }
                     else if (_pc == 3)
                     {
                         _pc = 2;
+                        _op1 = DataBus;
                         _state = State.CHECK_MOV;
                     }
                     break;
@@ -440,6 +442,111 @@ namespace TCPA.Infrastructure
                         _trw = false;
                         _op = _op0;
                         _state = State.PARSE_ADDRESSING;
+                    }
+                    break;
+
+                case State.JUMP_IF_C:
+                    if (C)
+                    {
+                        _pc = 0;
+                        _cc = _op0;
+                        _state = State.REQUEST_READ_BYTE;
+                    }
+                    else
+                    {
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    break;
+                case State.JUMP_IF_N:
+                    if (N)
+                    {
+                        _pc = 0;
+                        _cc = _op0;
+                        _state = State.REQUEST_READ_BYTE;
+                    }
+                    else
+                    {
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    break;
+                case State.JUMP_IF_V:
+                    if (V)
+                    {
+                        _pc = 0;
+                        _cc = _op0;
+                        _state = State.REQUEST_READ_BYTE;
+                    }
+                    else
+                    {
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    break;
+                case State.JUMP_IF_Z:
+                    if (Z)
+                    {
+                        _pc = 0;
+                        _cc = _op0;
+                        _state = State.REQUEST_READ_BYTE;
+                    }
+                    else
+                    {
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    break;
+                case State.JUMP_IF_NOT_C:
+                    if (!C)
+                    {
+                        _pc = 0;
+                        _cc = _op0;
+                        _state = State.REQUEST_READ_BYTE;
+                    }
+                    else
+                    {
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    break;
+                case State.JUMP_IF_NOT_N:
+                    if (!N)
+                    {
+                        _pc = 0;
+                        _cc = _op0;
+                        _state = State.REQUEST_READ_BYTE;
+                    }
+                    else
+                    {
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    break;
+                case State.JUMP_IF_NOT_V:
+                    if (!V)
+                    {
+                        _pc = 0;
+                        _cc = _op0;
+                        _state = State.REQUEST_READ_BYTE;
+                    }
+                    else
+                    {
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
+                    }
+                    break;
+                case State.JUMP_IF_NOT_Z:
+                    if (!Z)
+                    {
+                        _pc = 0;
+                        _cc = _op0;
+                        _state = State.REQUEST_READ_BYTE;
+                    }
+                    else
+                    {
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
             }

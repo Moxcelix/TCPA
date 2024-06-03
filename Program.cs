@@ -23,7 +23,7 @@ byte[] program = {
     0b_0100_0010,  // [2]
     0b_0001_1010, // MOV
     0b_0010_0100, // R4
-    0b_0000_1111,  // 0F
+    0b_0000_1111,  // #0F
     0b_0000_1011, // SETZ
     0b_0000_1100, // SETN
     0b_0000_1101, // SETV
@@ -32,6 +32,10 @@ byte[] program = {
     0b_0001_0000, // CLRN
     0b_0001_0001, // CLRV
     0b_0001_0010, // CLRC
+    0b_0000_1110, // SETC
+    0b_0000_0110, // JC
+    0b_1000_0001, // 01h
+
 };
 
 memory.SetData(program);
@@ -108,6 +112,6 @@ while (true)
     PrintRegisters();
     Console.WriteLine();
 
-    Thread.Sleep(10);
+    Thread.Sleep(1);
 }
 
