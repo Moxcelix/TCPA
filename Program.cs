@@ -20,7 +20,7 @@ byte[] program = {
     0x00,
     0b_0001_1010, // MOV
     0b_0010_0101, // R5
-    0b_0100_0010  // [2]
+    0b_0100_0010,  // [2]
 };
 
 memory.SetData(program);
