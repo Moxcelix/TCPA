@@ -34,6 +34,7 @@ void PrintMemory()
     {
 
         Console.BackgroundColor = i == controlUnit.CC ? ConsoleColor.Red : ConsoleColor.Black;
+        Console.ForegroundColor = i == memory.LastChanged ? ConsoleColor.Yellow : ConsoleColor.Gray;
         Console.Write($"{data[i]:X2}");
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Write(" ");
@@ -51,6 +52,7 @@ void PrintRegisters()
 
     for (int i = 0; i < data.Length; i++)
     {
+        Console.ForegroundColor = i == registers.LastChanged ? ConsoleColor.Yellow : ConsoleColor.Gray;
         Console.Write($"{data[i]:X2} ");
     }
     Console.WriteLine();
