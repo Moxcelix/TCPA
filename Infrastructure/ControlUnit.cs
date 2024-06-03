@@ -172,12 +172,14 @@ namespace TCPA.Infrastructure
                 case State.DISABLED:
                     _state = State.REQUEST_READ_BYTE;
                     break;
+
                 case State.REQUEST_READ_BYTE:
                     AddressBus = _cc;
                     MemoryCodeBus = (byte)MemoryCode.READ;
                     RW = false;
                     _state = State.READ_BYTE;
                     break;
+
                 case State.READ_BYTE:
                     if (MemoryReady)
                     {
@@ -185,6 +187,7 @@ namespace TCPA.Infrastructure
                         _state = State.CHECK_PART;
                     }
                     break;
+
                 case State.CHECK_PART:
                     if (_pc == 0)
                     {
@@ -208,6 +211,7 @@ namespace TCPA.Infrastructure
                         _state = State.PARSE_ADDRESSING;
                     }
                     break;
+
                 case State.CHECK_SINGLE_OP:
                     if (_cmd == (byte)OperationCode.NOP)
                     {
@@ -267,6 +271,7 @@ namespace TCPA.Infrastructure
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
+
                 case State.CHECK_DOUBLE_OP:
                     if (_cmd == (byte)OperationCode.ORG)
                     {
@@ -300,23 +305,27 @@ namespace TCPA.Infrastructure
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
+
                 case State.NEXT_CC_ALU_FIRST:
                     RW = true;
                     DataBus = _cc;
                     ALUCodeBus = (byte)ALUCode.FIRST;
                     _state = State.NEXT_CC_ALU_SECOND;
                     break;
+
                 case State.NEXT_CC_ALU_SECOND:
                     RW = true;
                     DataBus = 1;
                     ALUCodeBus = (byte)ALUCode.SECOND;
                     _state = State.NEXT_CC_ALU_GET_RESULT;
                     break;
+
                 case State.NEXT_CC_ALU_GET_RESULT:
                     RW = false;
                     ALUCodeBus = (byte)ALUCode.RESULT;
                     _state = State.NEXT_CC_ALU_WAIT_RESULT;
                     break;
+
                 case State.NEXT_CC_ALU_WAIT_RESULT:
                     if (ALUReady)
                     {
@@ -325,6 +334,7 @@ namespace TCPA.Infrastructure
                         _state = State.REQUEST_READ_BYTE;
                     }
                     break;
+
                 case State.PARSE_ADDRESSING:
                     if (CheckBit(_op, 7))
                     {
@@ -353,6 +363,7 @@ namespace TCPA.Infrastructure
                         _state = State.CONST_ADDRESSING;
                     }
                     break;
+
                 case State.DIRECT_ADDRESSING:
                     if (MemoryReady)
                     {
@@ -360,6 +371,7 @@ namespace TCPA.Infrastructure
                         _state = State.RETURN;
                     }
                     break;
+
                 case State.INDIRECT_ADDRESSING:
                     if (MemoryReady)
                     {
@@ -369,19 +381,23 @@ namespace TCPA.Infrastructure
                         _state = State.INDIRECT_TO_DIRECT;
                     }
                     break;
+
                 case State.INDIRECT_TO_DIRECT:
                     RW = _trw;
                     MemoryCodeBus = (byte)(RW ? MemoryCode.WRITE : MemoryCode.READ);
                     _state = State.DIRECT_ADDRESSING;
                     break;
+
                 case State.REGISTER_ADDRESSING:
                     RegisterCodeBus = 0;
                     _state = State.RETURN;
                     break;
+
                 case State.CONST_ADDRESSING:
                     DataBus = _op;
                     _state = State.RETURN;
                     break;
+
                 case State.RETURN:
                     if (_pc == 1)
                     {
@@ -401,6 +417,7 @@ namespace TCPA.Infrastructure
                         _state = State.CHECK_MOV;
                     }
                     break;
+
                 case State.CHECK_COMMAND:
                     if (_cmd == (byte)OperationCode.JC)
                     {
@@ -454,7 +471,7 @@ namespace TCPA.Infrastructure
                     RW = true;
                     DataBus = _op1;
                     ALUCodeBus = (byte)ALUCode.SECOND;
-                    
+
                     if (_cmd == (byte)OperationCode.SUM)
                     {
                         _state = State.ALU_GET_RESULT_SUM;
@@ -490,31 +507,37 @@ namespace TCPA.Infrastructure
                     ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0000;
                     _state = State.ALU_WAIT_RESULT;
                     break;
+
                 case State.ALU_GET_RESULT_SUB:
                     RW = false;
                     ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0001;
                     _state = State.ALU_WAIT_RESULT;
                     break;
+
                 case State.ALU_GET_RESULT_CMP:
                     RW = false;
                     ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0010;
                     _state = State.ALU_WAIT_RESULT_CMP;
                     break;
+
                 case State.ALU_GET_RESULT_ROL:
                     RW = false;
                     ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0011;
                     _state = State.ALU_WAIT_RESULT;
                     break;
+
                 case State.ALU_GET_RESULT_ROR:
                     RW = false;
                     ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0100;
                     _state = State.ALU_WAIT_RESULT;
                     break;
+
                 case State.ALU_GET_RESULT_OR:
                     RW = false;
                     ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0101;
                     _state = State.ALU_WAIT_RESULT;
                     break;
+
                 case State.ALU_GET_RESULT_AND:
                     RW = false;
                     ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0110;
@@ -548,6 +571,7 @@ namespace TCPA.Infrastructure
                     break;
 
                 case State.CHECK_MOV:
+
                     if (_cmd == (byte)OperationCode.MOV)
                     {
                         _trw = true;
@@ -576,6 +600,7 @@ namespace TCPA.Infrastructure
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
+
                 case State.JUMP_IF_N:
                     if (N)
                     {
@@ -589,6 +614,7 @@ namespace TCPA.Infrastructure
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
+
                 case State.JUMP_IF_V:
                     if (V)
                     {
@@ -602,6 +628,7 @@ namespace TCPA.Infrastructure
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
+
                 case State.JUMP_IF_Z:
                     if (Z)
                     {
@@ -615,6 +642,7 @@ namespace TCPA.Infrastructure
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
+
                 case State.JUMP_IF_NOT_C:
                     if (!C)
                     {
@@ -628,6 +656,7 @@ namespace TCPA.Infrastructure
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
+
                 case State.JUMP_IF_NOT_N:
                     if (!N)
                     {
@@ -641,6 +670,7 @@ namespace TCPA.Infrastructure
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
+
                 case State.JUMP_IF_NOT_V:
                     if (!V)
                     {
@@ -654,6 +684,7 @@ namespace TCPA.Infrastructure
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
+
                 case State.JUMP_IF_NOT_Z:
                     if (!Z)
                     {
