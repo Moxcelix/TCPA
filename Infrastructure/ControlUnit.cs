@@ -33,8 +33,7 @@ namespace TCPA.Infrastructure
             INDIRECT_TO_DIRECT,
             RETURN,
             CHECK_COMMAND,
-            ALU_FIRST,
-            ALU_SECOND,
+            ALU_DOUBLE_OPERATION,
             ALU_GET_RESULT_NOT,
             ALU_GET_RESULT_AND,
             ALU_GET_RESULT_OR,
@@ -43,6 +42,7 @@ namespace TCPA.Infrastructure
             ALU_GET_RESULT_ROL,
             ALU_GET_RESULT_ROR,
             ALU_GET_RESULT_CMP,
+            ALU_WAIT_RESULT_CMP,
             ALU_WAIT_RESULT,
         }
 
@@ -446,11 +446,11 @@ namespace TCPA.Infrastructure
                         RW = true;
                         DataBus = _op0;
                         ALUCodeBus = (byte)ALUCode.FIRST;
-                        _state = State.ALU_FIRST;
+                        _state = State.ALU_DOUBLE_OPERATION;
                     }
                     break;
 
-                case State.ALU_FIRST:
+                case State.ALU_DOUBLE_OPERATION:
                     RW = true;
                     DataBus = _op1;
                     ALUCodeBus = (byte)ALUCode.SECOND;
@@ -459,11 +459,65 @@ namespace TCPA.Infrastructure
                     {
                         _state = State.ALU_GET_RESULT_SUM;
                     }
+                    else if (_cmd == (byte)OperationCode.SUB)
+                    {
+                        _state = State.ALU_GET_RESULT_SUB;
+                    }
+                    else if (_cmd == (byte)OperationCode.ROL)
+                    {
+                        _state = State.ALU_GET_RESULT_ROL;
+                    }
+                    else if (_cmd == (byte)OperationCode.ROR)
+                    {
+                        _state = State.ALU_GET_RESULT_ROR;
+                    }
+                    else if (_cmd == (byte)OperationCode.CMP)
+                    {
+                        _state = State.ALU_GET_RESULT_CMP;
+                    }
+                    else if (_cmd == (byte)OperationCode.OR)
+                    {
+                        _state = State.ALU_GET_RESULT_OR;
+                    }
+                    else if (_cmd == (byte)OperationCode.AND)
+                    {
+                        _state = State.ALU_GET_RESULT_AND;
+                    }
                     break;
 
                 case State.ALU_GET_RESULT_SUM:
                     RW = false;
                     ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0000;
+                    _state = State.ALU_WAIT_RESULT;
+                    break;
+                case State.ALU_GET_RESULT_SUB:
+                    RW = false;
+                    ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0001;
+                    _state = State.ALU_WAIT_RESULT;
+                    break;
+                case State.ALU_GET_RESULT_CMP:
+                    RW = false;
+                    ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0010;
+                    _state = State.ALU_WAIT_RESULT_CMP;
+                    break;
+                case State.ALU_GET_RESULT_ROL:
+                    RW = false;
+                    ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0011;
+                    _state = State.ALU_WAIT_RESULT;
+                    break;
+                case State.ALU_GET_RESULT_ROR:
+                    RW = false;
+                    ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0100;
+                    _state = State.ALU_WAIT_RESULT;
+                    break;
+                case State.ALU_GET_RESULT_OR:
+                    RW = false;
+                    ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0101;
+                    _state = State.ALU_WAIT_RESULT;
+                    break;
+                case State.ALU_GET_RESULT_AND:
+                    RW = false;
+                    ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0110;
                     _state = State.ALU_WAIT_RESULT;
                     break;
 
@@ -481,6 +535,15 @@ namespace TCPA.Infrastructure
                         _op = _acc;
                         _pc = 1;
                         _state = State.PARSE_ADDRESSING;
+                    }
+                    break;
+
+                case State.ALU_WAIT_RESULT_CMP:
+                    if (ALUReady)
+                    {
+                        ALUCodeBus = (byte)ALUCode.DISABLE;
+                        _pc = 0;
+                        _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
 

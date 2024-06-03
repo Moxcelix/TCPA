@@ -10,20 +10,20 @@ var controller = new Controller(memory, alu, registers, controlUnit);
 
 int tact = 0;
 
-byte[] program = {
-    0x01,
-    0x07,
-    0x04,
-    0x15,
-    0x03,
-    0x06,
-    0x00,
+byte[] program = [
+    0b_0000_0001, // ORG
+    0b_0000_0111, // 07h
+    0b_0000_0100, // 04h
+    0b_0000_1111, // 15h
+    0b_0000_0011, // 03h
+    0b_0000_0110, // 06h
+    0b_0000_0000, // 00h
     0b_0001_1010, // MOV
     0b_0010_0101, // R5
-    0b_0100_0010,  // [2]
+    0b_0100_0010, // [2]
     0b_0001_1010, // MOV
     0b_0010_0100, // R4
-    0b_0000_1111,  // #0F
+    0b_0000_1111, // #0F
     0b_0000_1011, // SETZ
     0b_0000_1100, // SETN
     0b_0000_1101, // SETV
@@ -40,9 +40,7 @@ byte[] program = {
     0b_0000_1110, // SETC
     0b_0000_0110, // JC
     0b_1000_0001, // 01h
-
-
-};
+];
 
 memory.SetData(program);
 controller.Start();
