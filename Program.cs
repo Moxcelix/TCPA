@@ -29,6 +29,21 @@ byte[] program = {
 memory.SetData(program);
 controller.Start();
 
+void PrintFlags()
+{
+    Console.Write("Flags: ");
+    Console.ForegroundColor = controlUnit.N ? ConsoleColor.Green : ConsoleColor.Red;
+    Console.Write("N");
+    Console.ForegroundColor = controlUnit.V ? ConsoleColor.Green : ConsoleColor.Red;
+    Console.Write("V");
+    Console.ForegroundColor = controlUnit.C ? ConsoleColor.Green : ConsoleColor.Red;
+    Console.Write("C");
+    Console.ForegroundColor = controlUnit.Z ? ConsoleColor.Green : ConsoleColor.Red;
+    Console.Write("Z");
+    Console.ForegroundColor = ConsoleColor.Gray;
+    Console.WriteLine();
+}
+
 void PrintMemory()
 {
     var data = memory.GetData();
@@ -76,6 +91,7 @@ while (true)
     Console.WriteLine($"CMD reg: {controlUnit.CMD,2:X2}");
     Console.WriteLine($"ACC reg: {controlUnit.ACC,2:X2}");
     Console.WriteLine($"DB:      {controlUnit.DataBus,2:X2}");
+    PrintFlags();
     Console.WriteLine();
     Console.WriteLine("Memory");
     PrintMemory();
@@ -84,6 +100,6 @@ while (true)
     PrintRegisters();
     Console.WriteLine();
 
-    Thread.Sleep(500);
+    Thread.Sleep(10);
 }
 
