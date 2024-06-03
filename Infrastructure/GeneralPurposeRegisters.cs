@@ -10,7 +10,7 @@ namespace TCPA.Infrastructure
 
         public byte CodeBus { get; set; }
 
-        public int LastChanged {  get; private set; }
+        public int LastChanged { get; private set; } = -1;
 
         public byte[] GetData()
         {
@@ -21,8 +21,6 @@ namespace TCPA.Infrastructure
         {
             if (!CheckBit(CodeBus, 7))
             {
-                LastChanged = -1;
-
                 return;
             }
 
