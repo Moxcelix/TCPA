@@ -353,9 +353,6 @@ namespace TCPA.Infrastructure
                     if (MemoryReady)
                     {
                         MemoryCodeBus = (byte)MemoryCode.DISABLE;
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine(DataBus.ToString());
-                        Console.ForegroundColor = ConsoleColor.Gray;
                         AddressBus = DataBus;
                         DataBus = _buf;
                         _state = State.INDIRECT_TO_DIRECT;
