@@ -21,7 +21,7 @@ namespace TCPA.Infrastructure
 
         public byte CodeBus { get; set; }
 
-        public int LastChanged { get; private set; }
+        public int LastChanged { get; private set; } = -1;
 
         public bool OutOfRange => _state == State.OUT_OF_RANGE;
 
@@ -50,8 +50,6 @@ namespace TCPA.Infrastructure
             if (!enabled)
             {
                 _state = State.WRITE;
-
-                LastChanged = -1;
 
                 return;
             }
