@@ -25,7 +25,6 @@ namespace TCPA.Infrastructure
             JUMP_IF_NOT_N,
             JUMP_IF_NOT_V,
             JUMP_IF_NOT_Z,
-            NOT,
             PARSE_ADDRESSING,
             CONST_ADDRESSING,
             DIRECT_ADDRESSING,
@@ -34,6 +33,10 @@ namespace TCPA.Infrastructure
             INDIRECT_TO_DIRECT,
             RETURN,
             CHECK_COMMAND,
+            ALU_FIRST,
+            ALU_SECOND,
+            ALU_GET_RESULT_NOT,
+            ALU_WAIT_RESULT,
         }
 
         private enum MemoryCode : byte
@@ -48,6 +51,7 @@ namespace TCPA.Infrastructure
             FIRST = 0b_1001_0000,
             SECOND = 0b_1010_0000,
             RESULT = 0b_1011_0000,
+            RESULT_FLAGS = 0b_1111_0000,
             DISABLE = 0b_0000_0000,
         }
 
@@ -425,7 +429,26 @@ namespace TCPA.Infrastructure
                     }
                     else if (_cmd == (byte)OperationCode.NOT)
                     {
-                        _state = State.NOT;
+                        RW = true;
+                        DataBus = _op0;
+                        ALUCodeBus = (byte)ALUCode.FIRST;
+                        _state = State.ALU_GET_RESULT_NOT;
+                    }
+                    break;
+
+                case State.ALU_GET_RESULT_NOT:
+                    RW = false;
+                    ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0111;
+                    _state = State.ALU_WAIT_RESULT;
+                    break;
+                case State.ALU_WAIT_RESULT:
+                    if (ALUReady)
+                    {
+                        ALUCodeBus = (byte)ALUCode.DISABLE;
+                        _trw = true;
+                        _op = _acc;
+                        _pc = 1;
+                        _state = State.PARSE_ADDRESSING;
                     }
                     break;
 
