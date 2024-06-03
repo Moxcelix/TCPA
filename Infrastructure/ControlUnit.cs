@@ -435,6 +435,12 @@ namespace TCPA.Infrastructure
                         _pc = 1;
                         _state = State.PARSE_ADDRESSING;
                     }
+                    else
+                    {
+                        _trw = false;
+                        _op = _op0;
+                        _state = State.PARSE_ADDRESSING;
+                    }
                     break;
             }
         }
