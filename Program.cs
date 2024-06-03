@@ -1,7 +1,7 @@
 ﻿using TCPA.Infrastructure;
 using TCPA.Application;
 
-var memory = new LinearMemory(16);
+var memory = new LinearMemory(256);
 var alu = new ArithmeticLogicUnit();
 var registers = new GeneralPurposeRegisters();
 var controlUnit = new ControlUnit();
@@ -32,9 +32,17 @@ void PrintMemory()
 
     for(int i = 0; i < data.Length; i++)
     {
-        Console.Write(data[i] + " ");
-    }
-    Console.WriteLine();    
+
+        Console.BackgroundColor = i == controlUnit.CC ? ConsoleColor.Red : ConsoleColor.Black;
+        Console.Write($"{data[i]:X2}");
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.Write(" ");
+
+        if (i%16 == 15)
+        {
+            Console.WriteLine();
+        }
+    }   
 }
 
 void PrintRegisters()
@@ -43,7 +51,7 @@ void PrintRegisters()
 
     for (int i = 0; i < data.Length; i++)
     {
-        Console.Write(data[i] + " ");
+        Console.Write($"{data[i]:X2} ");
     }
     Console.WriteLine();
 }
