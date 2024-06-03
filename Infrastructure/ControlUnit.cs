@@ -36,6 +36,13 @@ namespace TCPA.Infrastructure
             ALU_FIRST,
             ALU_SECOND,
             ALU_GET_RESULT_NOT,
+            ALU_GET_RESULT_AND,
+            ALU_GET_RESULT_OR,
+            ALU_GET_RESULT_SUM,
+            ALU_GET_RESULT_SUB,
+            ALU_GET_RESULT_ROL,
+            ALU_GET_RESULT_ROR,
+            ALU_GET_RESULT_CMP,
             ALU_WAIT_RESULT,
         }
 
@@ -381,7 +388,7 @@ namespace TCPA.Infrastructure
                         _pc = 0;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
-                    else if(_pc == 2)
+                    else if (_pc == 2)
                     {
                         _pc = 1;
                         _op0 = DataBus;
@@ -434,6 +441,30 @@ namespace TCPA.Infrastructure
                         ALUCodeBus = (byte)ALUCode.FIRST;
                         _state = State.ALU_GET_RESULT_NOT;
                     }
+                    else
+                    {
+                        RW = true;
+                        DataBus = _op0;
+                        ALUCodeBus = (byte)ALUCode.FIRST;
+                        _state = State.ALU_FIRST;
+                    }
+                    break;
+
+                case State.ALU_FIRST:
+                    RW = true;
+                    DataBus = _op1;
+                    ALUCodeBus = (byte)ALUCode.SECOND;
+                    
+                    if (_cmd == (byte)OperationCode.SUM)
+                    {
+                        _state = State.ALU_GET_RESULT_SUM;
+                    }
+                    break;
+
+                case State.ALU_GET_RESULT_SUM:
+                    RW = false;
+                    ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0000;
+                    _state = State.ALU_WAIT_RESULT;
                     break;
 
                 case State.ALU_GET_RESULT_NOT:
@@ -441,6 +472,7 @@ namespace TCPA.Infrastructure
                     ALUCodeBus = (byte)ALUCode.RESULT_FLAGS | 0b_0111;
                     _state = State.ALU_WAIT_RESULT;
                     break;
+
                 case State.ALU_WAIT_RESULT:
                     if (ALUReady)
                     {
@@ -453,7 +485,7 @@ namespace TCPA.Infrastructure
                     break;
 
                 case State.CHECK_MOV:
-                    if(_cmd == (byte)OperationCode.MOV)
+                    if (_cmd == (byte)OperationCode.MOV)
                     {
                         _trw = true;
                         _op = _op0;
