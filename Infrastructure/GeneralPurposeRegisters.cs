@@ -10,6 +10,13 @@ namespace TCPA.Infrastructure
 
         public byte CodeBus { get; set; }
 
+        public int LastChanged { get; private set; } = -1;
+
+        public byte[] GetData()
+        {
+            return _registers;
+        }
+
         public void Update()
         {
             if (!CheckBit(CodeBus, 7))
@@ -17,13 +24,17 @@ namespace TCPA.Infrastructure
                 return;
             }
 
+            var index = CodeBus & 0b_0000_1111;
+
             if (CheckBit(CodeBus, 6))
             {
-                _registers[CodeBus & 0b_0000_1111] = DataBus;
+                _registers[index] = DataBus;
+
+                LastChanged = index;
             }
             else
             {
-                DataBus = _registers[CodeBus & 0b_0000_1111];
+                DataBus = _registers[index];
             }
         }
 

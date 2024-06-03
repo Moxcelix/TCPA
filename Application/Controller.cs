@@ -36,10 +36,13 @@ namespace TCPA.Application
             _controlUnit.MemoryReady = _memory.Ready;
             _controlUnit.ALUReady = _arithmeticLogicUnit.Ready;
 
-            _controlUnit.N = _arithmeticLogicUnit.N;
-            _controlUnit.V = _arithmeticLogicUnit.V;
-            _controlUnit.Z = _arithmeticLogicUnit.Z;
-            _controlUnit.C = _arithmeticLogicUnit.C;
+            if((_controlUnit.ALUCodeBus & 0b_0100_0000) != 0)
+            {
+                _controlUnit.N = _arithmeticLogicUnit.N;
+                _controlUnit.V = _arithmeticLogicUnit.V;
+                _controlUnit.Z = _arithmeticLogicUnit.Z;
+                _controlUnit.C = _arithmeticLogicUnit.C;
+            }
 
             _dataBus = _controlUnit.DataBus;
 

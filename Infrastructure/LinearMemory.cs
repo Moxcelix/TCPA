@@ -21,10 +21,27 @@ namespace TCPA.Infrastructure
 
         public byte CodeBus { get; set; }
 
+        public int LastChanged { get; private set; } = -1;
+
         public bool OutOfRange => _state == State.OUT_OF_RANGE;
 
         public bool Ready => _state == State.READY;
 
+        public void SetData(byte[] data)
+        {
+            if(data.Length <= _data.Length)
+            {
+                for(int i = 0; i < data.Length; i++)
+                {
+                    _data[i] = data[i];
+                }
+            }
+        }
+
+        public byte[] GetData()
+        {
+            return _data;
+        }
 
         public void Update()
         {
@@ -61,6 +78,7 @@ namespace TCPA.Infrastructure
                                 break;
                             }
                             _data[AddressBus] = DataBus;
+                            LastChanged = AddressBus;
                             _state = State.READY;
                             break;
                         default:

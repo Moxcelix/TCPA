@@ -43,7 +43,7 @@ namespace TCPA.Infrastructure
             switch (_state)
             {
                 case State.WRITE:
-                    var mode = CodeBus & 0b_1111_0000;
+                    var mode = CodeBus & 0b_1011_0000;
                     switch (mode)
                     {
                         case 0b_1001_0000:
