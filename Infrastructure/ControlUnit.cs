@@ -103,6 +103,7 @@ namespace TCPA.Infrastructure
         private byte _buf = 0;
         private byte _cc = 0;
         private byte _pc = 0;
+        private byte _cs = 1;
         private bool _trw = false;
 
         public byte DataBus { get; set; }
@@ -216,58 +217,68 @@ namespace TCPA.Infrastructure
                     if (_cmd == (byte)OperationCode.NOP)
                     {
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else if (_cmd == (byte)OperationCode.SETC)
                     {
                         C = true;
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else if (_cmd == (byte)OperationCode.SETZ)
                     {
                         Z = true;
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else if (_cmd == (byte)OperationCode.SETV)
                     {
                         V = true;
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else if (_cmd == (byte)OperationCode.SETN)
                     {
                         N = true;
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else if (_cmd == (byte)OperationCode.CLRC)
                     {
                         C = false;
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else if (_cmd == (byte)OperationCode.CLRZ)
                     {
                         Z = false;
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else if (_cmd == (byte)OperationCode.CLRV)
                     {
                         V = false;
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else if (_cmd == (byte)OperationCode.CLRN)
                     {
                         N = false;
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else
                     {
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
@@ -302,6 +313,7 @@ namespace TCPA.Infrastructure
                     else
                     {
                         _acc = _op0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
@@ -315,7 +327,7 @@ namespace TCPA.Infrastructure
 
                 case State.NEXT_CC_ALU_SECOND:
                     RW = true;
-                    DataBus = 1;
+                    DataBus = _cs;
                     ALUCodeBus = (byte)ALUCode.SECOND;
                     _state = State.NEXT_CC_ALU_GET_RESULT;
                     break;
@@ -402,6 +414,7 @@ namespace TCPA.Infrastructure
                     if (_pc == 1)
                     {
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else if (_pc == 2)
@@ -566,6 +579,7 @@ namespace TCPA.Infrastructure
                     {
                         ALUCodeBus = (byte)ALUCode.DISABLE;
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
@@ -591,12 +605,13 @@ namespace TCPA.Infrastructure
                     if (C)
                     {
                         _pc = 0;
-                        _cc = _op0;
-                        _state = State.REQUEST_READ_BYTE;
+                        _cs = _op0;
+                        _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else
                     {
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
@@ -605,12 +620,13 @@ namespace TCPA.Infrastructure
                     if (N)
                     {
                         _pc = 0;
-                        _cc = _op0;
-                        _state = State.REQUEST_READ_BYTE;
+                        _cs = _op0;
+                        _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else
                     {
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
@@ -619,12 +635,13 @@ namespace TCPA.Infrastructure
                     if (V)
                     {
                         _pc = 0;
-                        _cc = _op0;
-                        _state = State.REQUEST_READ_BYTE;
+                        _cs = _op0;
+                        _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else
                     {
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
@@ -633,12 +650,13 @@ namespace TCPA.Infrastructure
                     if (Z)
                     {
                         _pc = 0;
-                        _cc = _op0;
-                        _state = State.REQUEST_READ_BYTE;
+                        _cs = _op0;
+                        _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else
                     {
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
@@ -647,12 +665,13 @@ namespace TCPA.Infrastructure
                     if (!C)
                     {
                         _pc = 0;
-                        _cc = _op0;
-                        _state = State.REQUEST_READ_BYTE;
+                        _cs = _op0;
+                        _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else
                     {
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
@@ -661,12 +680,13 @@ namespace TCPA.Infrastructure
                     if (!N)
                     {
                         _pc = 0;
-                        _cc = _op0;
-                        _state = State.REQUEST_READ_BYTE;
+                        _cs = _op0;
+                        _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else
                     {
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
@@ -675,12 +695,13 @@ namespace TCPA.Infrastructure
                     if (!V)
                     {
                         _pc = 0;
-                        _cc = _op0;
-                        _state = State.REQUEST_READ_BYTE;
+                        _cs = _op0;
+                        _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else
                     {
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;
@@ -689,12 +710,13 @@ namespace TCPA.Infrastructure
                     if (!Z)
                     {
                         _pc = 0;
-                        _cc = _op0;
-                        _state = State.REQUEST_READ_BYTE;
+                        _cs = _op0;
+                        _state = State.NEXT_CC_ALU_FIRST;
                     }
                     else
                     {
                         _pc = 0;
+                        _cs = 1;
                         _state = State.NEXT_CC_ALU_FIRST;
                     }
                     break;

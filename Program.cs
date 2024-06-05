@@ -1,7 +1,7 @@
 ﻿using TCPA.Infrastructure;
 using TCPA.Application;
 
-var memory = new LinearMemory(256);
+var memory = new LinearMemory(64);
 var alu = new ArithmeticLogicUnit();
 var registers = new GeneralPurposeRegisters();
 var controlUnit = new ControlUnit();
@@ -12,12 +12,13 @@ int tact = 0;
 
 byte[] program = [
     0b_0000_0001, // ORG
-    0b_0000_0111, // 07h
+    0b_0000_1000, // 08h
     0b_0000_0100, // 04h
     0b_0000_1111, // 15h
     0b_0000_0011, // 03h
     0b_0000_0110, // 06h
     0b_0000_0000, // 00h
+    0b_1110_1011, // EBh (-21)
     0b_0001_1010, // MOV
     0b_0010_0101, // R5
     0b_0100_0010, // [2]
@@ -39,7 +40,7 @@ byte[] program = [
     0b_0100_0010, // [2]
     0b_0000_1110, // SETC
     0b_0000_0110, // JC
-    0b_1000_0001, // 01h
+    0b_1000_0111, // 07h
 ];
 
 memory.SetData(program);
@@ -116,6 +117,6 @@ while (true)
     PrintRegisters();
     Console.WriteLine();
 
-    Thread.Sleep(1);
+    Thread.Sleep(10);
 }
 
