@@ -1,29 +1,30 @@
 ﻿using TCPA.Infrastructure;
+using TCPA.Models;
 
 namespace TCPA.Application
 {
     internal class Application
     {
-        private readonly Controller _controller;
-        private readonly LinearMemory _memory;
-        private readonly ArithmeticLogicUnit _alu;
-        private readonly GeneralPurposeRegisters _registers;
-        private readonly ControlUnit _controlUnit;
+        public Controller Controller { get; }
+        public IMemory Memory { get; }
+        public IArithmeticLogicUnit ALU { get; }
+        public IRegisterBlock Registers { get; }
+        public IControlUnit ControlUnit { get; }
 
         internal static readonly char[] separator = [' ', '\r', '\n'];
 
         public Application()
         {
-            _memory = new LinearMemory(64);
-            _alu = new ArithmeticLogicUnit();
-            _registers = new GeneralPurposeRegisters();
-            _controlUnit = new ControlUnit();
+            Memory = new LinearMemory(64);
+            ALU = new ArithmeticLogicUnit();
+            Registers = new GeneralPurposeRegisters();
+            ControlUnit = new ControlUnit();
 
-            _controller = new Controller(
-                _memory,
-                _alu, 
-                _registers, 
-                _controlUnit);
+            Controller = new Controller(
+                Memory,
+                ALU, 
+                Registers, 
+                ControlUnit);
         }
 
         public void LoadData(string path)
@@ -37,7 +38,7 @@ namespace TCPA.Application
                    .Select(hex => Convert.ToByte(hex, 16))
                    .ToArray();
 
-                _memory.SetData(byteArray);
+                ((LinearMemory)Memory).SetData(byteArray);
             }
         }
     }
