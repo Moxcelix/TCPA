@@ -5,7 +5,7 @@ namespace TCPA.Application
 {
     internal class Application
     {
-        public delegate void OnUpdateDelegate();
+        public delegate void OnUpdateDelegate(Application application);
         private event OnUpdateDelegate? OnUpdate;
 
         public Controller Controller { get; }
