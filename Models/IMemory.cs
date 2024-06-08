@@ -11,5 +11,9 @@
         public bool Ready { get; }
 
         public bool OutOfRange {  get; }
+
+        public void SetData(byte[] data);
+
+        public byte[] GetData();
     }
 }
