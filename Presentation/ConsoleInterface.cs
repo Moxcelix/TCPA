@@ -13,8 +13,12 @@ namespace TCPA.Presentation
             _initialCursorTop = Console.CursorTop;
             _application = application;
 
+            Console.Write("Введите имя файла с байткодом -> ");
+            var name = Console.ReadLine();
+            Console.Clear();
+
             Console.CursorVisible = false;
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "p.dat");
+            var path = Path.Combine(Directory.GetCurrentDirectory(), $"{name}.dat");
 
             _application.LoadData(path);
             _application.AddUpdateListener(Update);
