@@ -5,6 +5,9 @@ namespace TCPA.Application
 {
     internal class Application
     {
+        public delegate void OnUpdateDelegate();
+        public event OnUpdateDelegate? OnUpdate;
+
         public Controller Controller { get; }
         public IMemory Memory { get; }
         public IArithmeticLogicUnit ALU { get; }
@@ -40,6 +43,16 @@ namespace TCPA.Application
 
                 ((LinearMemory)Memory).SetData(byteArray);
             }
+        }
+
+        public void Run()
+        {
+
+        }
+
+        private void Update()
+        {
+            OnUpdate?.Invoke();
         }
     }
 }
