@@ -4,9 +4,33 @@ namespace TCPA.Presentation
 {
     internal class ConsoleInterface
     {
+        private int _tact = 0;
+        private int _initialCursorTop;
+
+        public ConsoleInterface()
+        {
+            _initialCursorTop = Console.CursorTop;
+
+            Console.CursorVisible = false;
+        }
+
         public void Update(Application.Application application)
         {
-
+            Console.SetCursorPosition(0, _initialCursorTop);
+            Console.WriteLine($"Tact: {_tact++:0000}");
+            Console.WriteLine($"CU State: {application.ControlUnit.CurrentState,-32}");
+            Console.WriteLine($"CC reg:  {application.ControlUnit.CC,2:X2}");
+            Console.WriteLine($"CMD reg: {application.ControlUnit.CMD,2:X2}");
+            Console.WriteLine($"ACC reg: {application.ControlUnit.ACC,2:X2}");
+            Console.WriteLine($"DB:      {application.ControlUnit.DataBus,2:X2}");
+            PrintFlags(application.ControlUnit);
+            Console.WriteLine();
+            Console.WriteLine("Memory");
+            PrintMemory(application.Memory, application.ControlUnit);
+            Console.WriteLine();
+            Console.WriteLine("Registers");
+            PrintRegisters(application.Registers);
+            Console.WriteLine();
         }
 
         private static void PrintFlags(IControlUnit controlUnit)
