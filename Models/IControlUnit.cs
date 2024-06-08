@@ -35,5 +35,7 @@
         public byte ACC { get; }
 
         public byte CC { get; }
+
+        public string CurrentState { get; }
     }
 }
