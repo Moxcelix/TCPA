@@ -59,6 +59,8 @@ namespace TCPA.Application
 
         private void Update()
         {
+            Controller.Start();
+
             while(true)
             {
                 OnUpdate?.Invoke(this);
