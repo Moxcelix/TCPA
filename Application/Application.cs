@@ -41,7 +41,7 @@ namespace TCPA.Application
                    .Select(hex => Convert.ToByte(hex, 16))
                    .ToArray();
 
-                ((LinearMemory)Memory).SetData(byteArray);
+                Memory.SetData(byteArray);
             }
         }
 
