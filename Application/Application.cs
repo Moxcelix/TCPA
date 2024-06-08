@@ -5,7 +5,7 @@ namespace TCPA.Application
 {
     internal class Application
     {
-        public delegate void OnUpdateDelegate(Application application);
+        public delegate void OnUpdateDelegate();
         private event OnUpdateDelegate? OnUpdate;
 
         public Controller Controller { get; }
@@ -63,7 +63,7 @@ namespace TCPA.Application
 
             while(true)
             {
-                OnUpdate?.Invoke(this);
+                OnUpdate?.Invoke();
 
                 Controller.Update();
 
