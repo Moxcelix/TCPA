@@ -47,12 +47,21 @@ namespace TCPA.Application
 
         public void Run()
         {
+            var thread = new Thread(Update);
 
+            thread.Start();
         }
 
         private void Update()
         {
-            OnUpdate?.Invoke();
+            while(true)
+            {
+                OnUpdate?.Invoke();
+
+                Controller.Update();
+
+                Thread.Sleep(10);
+            }
         }
     }
 }
