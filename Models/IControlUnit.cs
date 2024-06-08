@@ -29,5 +29,11 @@
         public byte ALUCodeBus { get; }
 
         public byte MemoryCodeBus { get; }
+
+        public byte CMD { get; }
+
+        public byte ACC { get; }
+
+        public byte CC { get; }
     }
 }
