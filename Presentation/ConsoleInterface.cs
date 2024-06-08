@@ -14,8 +14,9 @@ namespace TCPA.Presentation
             _application = application;
 
             Console.CursorVisible = false;
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "p.dat");
 
-            _application.LoadData("p.dat");
+            _application.LoadData(path);
             _application.AddUpdateListener(Update);
         }
 
