@@ -6,7 +6,7 @@ namespace TCPA.Application
     internal class Application
     {
         public delegate void OnUpdateDelegate();
-        public event OnUpdateDelegate? OnUpdate;
+        private event OnUpdateDelegate? OnUpdate;
 
         public Controller Controller { get; }
         public IMemory Memory { get; }
@@ -43,6 +43,11 @@ namespace TCPA.Application
 
                 ((LinearMemory)Memory).SetData(byteArray);
             }
+        }
+
+        public void AddUpdateListener(OnUpdateDelegate listener)
+        {
+            OnUpdate += listener;
         }
 
         public void Run()
