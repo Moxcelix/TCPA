@@ -134,7 +134,7 @@ namespace TCPA.Infrastructure
 
         public byte MemoryCodeBus { get; private set; }
 
-        public State CurrentState => _state;
+        public string CurrentState => _state.ToString();
 
         public byte CMD => _cmd;
 
