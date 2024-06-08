@@ -11,5 +11,11 @@
         public bool Ready { get; }
 
         public bool OutOfRange {  get; }
+
+        public int LastChanged { get; }
+
+        public void SetData(byte[] data);
+
+        public byte[] GetData();
     }
 }

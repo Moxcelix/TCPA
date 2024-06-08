@@ -93,7 +93,6 @@ namespace TCPA.Infrastructure
             MOV = 0b_0001_1010,
         }
 
-
         private State _state = State.DISABLED;
         private byte _cmd = 0;
         private byte _op = 0;
@@ -134,7 +133,7 @@ namespace TCPA.Infrastructure
 
         public byte MemoryCodeBus { get; private set; }
 
-        public State CurrentState => _state;
+        public string CurrentState => _state.ToString();
 
         public byte CMD => _cmd;
 
