@@ -61,7 +61,7 @@ namespace TCPA.Application
         {
             while(true)
             {
-                OnUpdate?.Invoke();
+                OnUpdate?.Invoke(this);
 
                 Controller.Update();
 
